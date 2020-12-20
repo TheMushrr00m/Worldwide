@@ -18,6 +18,7 @@ const (
 
 	cpuTicksPerSample    = float64(4194304) / sampleRate
 	maxFrameBufferLength = 5000
+	volume               = 0.07
 )
 
 // APU is the GameBoy's audio processing unit. Audio comprises four
@@ -118,7 +119,8 @@ func (a *APU) Buffer(cpuTicks int, speed int) {
 	valL := (chn1l + chn2l + chn3l + chn4l) / 4
 	valR := (chn1r + chn2r + chn3r + chn4r) / 4
 
-	a.audioBuffer <- [2]byte{byte(float64(valL) * a.lVol), byte(float64(valR) * a.rVol)}
+	lVol, rVol := valL*a.lVol*volume, valR*a.rVol*volume
+	a.audioBuffer <- [2]byte{byte(lVol), byte(rVol)}
 }
 
 var soundMask = []byte{

@@ -39,14 +39,14 @@ type Channel struct {
 
 // Sample returns a single sample for streaming the sound output. Each sample
 // will increase the internal timer based on the global sample rate.
-func (chn *Channel) Sample() (outputL, outputR uint16) {
-	var output uint16
+func (chn *Channel) Sample() (outputL, outputR float64) {
+	var output float64
 	step := chn.frequency * twoPi / float64(sampleRate)
 	chn.time += step
 	if chn.shouldPlay() {
 		// Take the sample value from the generator
 		if !chn.debugOff {
-			output = uint16(float64(chn.generator(chn.time)) * chn.amplitude)
+			output = float64(chn.generator(chn.time)) * chn.amplitude
 		}
 		if chn.duration > 0 {
 			chn.duration--
