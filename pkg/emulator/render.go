@@ -119,13 +119,9 @@ func (cpu *CPU) handleJoypad() {
 				cpu.setJoypadFlag()
 			}
 		case joypad.Save:
-			cpu.Sound.Off()
 			cpu.dumpData()
-			cpu.Sound.On()
 		case joypad.Load:
-			cpu.Sound.Off()
 			cpu.loadData()
-			cpu.Sound.On()
 		case joypad.Pause:
 			p := &cpu.debug.pause
 			b := &cpu.debug.Break
@@ -143,10 +139,8 @@ func (cpu *CPU) handleJoypad() {
 			if !p.Delay() {
 				if p.On() {
 					p.SetOff(30)
-					cpu.Sound.On()
 				} else {
 					p.SetOn(30)
-					cpu.Sound.Off()
 				}
 			}
 		}

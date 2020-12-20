@@ -344,7 +344,7 @@ func (cpu *CPU) Init(romdir string, debug bool) {
 	cpu.load()
 
 	// Init APU
-	cpu.Sound.Init()
+	cpu.Sound.Init(true)
 
 	// Init RTC
 	go cpu.RTC.Init()
