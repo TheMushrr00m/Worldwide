@@ -128,6 +128,7 @@ test:
 
 .SILENT:
 timer-test:
+	make build
 	-$(call compare,$(TIM_TEST0))
 	-$(call compare,$(TIM_TEST1))
 	-$(call compare,$(TIM_TEST2))
