@@ -57,14 +57,15 @@ func Run() int {
 	cpu.Cartridge.ParseCartridge(romData)
 	cpu.TransferROM(romData)
 
+	test := *outputScreen != ""
 	os.Chdir(cur)
-	cpu.Init(romDir, *debug)
+	cpu.Init(romDir, *debug, test)
 	defer func() {
 		os.Chdir(cur)
 		cpu.Exit()
 	}()
 
-	if *outputScreen != "" {
+	if test {
 		sec := 60
 		cpu.DebugExec(30*sec, *outputScreen)
 		return ExitCodeOK

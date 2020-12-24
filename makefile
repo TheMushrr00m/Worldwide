@@ -5,11 +5,11 @@ LDFLAGS := -X 'main.version=$(VERSION)'
 
 .PHONY: build
 build:
-	@go build -o $(BINDIR)/darwin-amd64/$(NAME).app -ldflags "$(LDFLAGS)" ./cmd/
+	@go build -o $(BINDIR)/darwin-amd64/$(NAME) -ldflags "$(LDFLAGS)" ./cmd/
 
 .PHONY: run
 run:
-	make build && ./$(BINDIR)/darwin-amd64/$(NAME).app
+	make build && ./$(BINDIR)/darwin-amd64/$(NAME)
 	@make clean
 
 .PHONY: build-linux
@@ -67,12 +67,13 @@ TIM_TEST11=mooneye-gb/timer/tima_write_reloading/
 TIM_TEST12=mooneye-gb/timer/tma_write_reloading/
 
 define compare
-	go run ./cmd/ --test="./test/$1actual.jpg" ./test/$1rom.gb
+	./$(BINDIR)/darwin-amd64/$(NAME) --test="./test/$1actual.jpg" ./test/$1rom.gb
 	-diff "./test/$1actual.jpg" "./test/$1expected.jpg" && echo "$1 OK"
 endef
 
 .SILENT:
 test:
+	make build
 	-$(call compare,$(TEST0))
 	-$(call compare,$(TEST1))
 	-$(call compare,$(TEST2))

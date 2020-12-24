@@ -51,39 +51,34 @@ func (g *GPU) setSPRLine(entryX, entryY, lineNumber int, addr uint16, tileType i
 		lowerColor := (lowerByte >> bitCtr) & 0x01
 		colorNumber := (upperColor << 1) + lowerColor // 0 or 1 or 2 or 3
 
-		var RGB, R, G, B byte
-		var isTransparent bool
-
 		// 色番号からRGB値を算出する
+		RGB, isTransparent := g.parsePallete(tileType, colorNumber)
+		R, G, B := colors[RGB][0], colors[RGB][1], colors[RGB][2]
 		if isCGB {
 			palleteNumber := attr & 0x07 // パレット番号 OBPn
 			R, G, B, isTransparent = g.parseCGBPallete(tileType, palleteNumber, colorNumber)
-		} else {
-			RGB, isTransparent = g.parsePallete(tileType, colorNumber)
-			R, G, B = colors[RGB][0], colors[RGB][1], colors[RGB][2]
 		}
 		c := color.RGBA{R, G, B, 0xff}
 
 		var deltaX, deltaY int
 		if !isTransparent {
+
 			// 反転を考慮してpixelをセット
-			if (attr>>6)&0x01 == 1 && (attr>>5)&0x01 == 1 {
-				// 上下左右
+			switch {
+			case (attr>>6)&0x01 == 1 && (attr>>5)&0x01 == 1: // 上下左右
 				deltaX = int(7 - i)
 				deltaY = (spriteYSize - 1) - lineNumber
-			} else if (attr>>6)&0x01 == 1 {
-				// 上下
+			case (attr>>6)&0x01 == 1: // 上下
 				deltaX = int(i)
 				deltaY = (spriteYSize - 1) - lineNumber
-			} else if (attr>>5)&0x01 == 1 {
-				// 左右
+			case (attr>>5)&0x01 == 1: // 左右
 				deltaX = int(7 - i)
 				deltaY = lineNumber
-			} else {
-				// 反転無し
+			default: // 反転無し
 				deltaX = int(i)
 				deltaY = lineNumber
 			}
+
 			x := entryX + deltaX
 			y := entryY + deltaY
 

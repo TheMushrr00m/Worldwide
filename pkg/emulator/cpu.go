@@ -322,7 +322,7 @@ func (cpu *CPU) initDMGPalette() {
 }
 
 // Init CPU・メモリの初期化
-func (cpu *CPU) Init(romdir string, debug bool) {
+func (cpu *CPU) Init(romdir string, debug bool, test bool) {
 	cpu.initRegister()
 	cpu.initIOMap()
 
@@ -344,7 +344,7 @@ func (cpu *CPU) Init(romdir string, debug bool) {
 	cpu.load()
 
 	// Init APU
-	cpu.Sound.Init(true)
+	cpu.Sound.Init(!test)
 
 	// Init RTC
 	go cpu.RTC.Init()

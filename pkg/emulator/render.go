@@ -118,10 +118,6 @@ func (cpu *CPU) handleJoypad() {
 			if cpu.Reg.IME && cpu.getJoypadEnable() {
 				cpu.setJoypadFlag()
 			}
-		case joypad.Save:
-			cpu.dumpData()
-		case joypad.Load:
-			cpu.loadData()
 		case joypad.Pause:
 			p := &cpu.debug.pause
 			b := &cpu.debug.Break
