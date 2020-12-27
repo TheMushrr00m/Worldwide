@@ -100,12 +100,13 @@ func (cpu *CPU) renderScreen(screen *ebiten.Image) {
 
 		op := &ebiten.DrawImageOptions{}
 		screen.DrawImage(dScreen, op)
-	} else {
-		if !skipRender && cpu.Config.Display.HQ2x {
-			display = cpu.GPU.HQ2x()
-		}
-		screen.DrawImage(display, nil)
+		return
 	}
+
+	if !skipRender && cpu.Config.Display.HQ2x {
+		display = cpu.GPU.HQ2x()
+	}
+	screen.DrawImage(display, nil)
 }
 
 func (cpu *CPU) handleJoypad() {

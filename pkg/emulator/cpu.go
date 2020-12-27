@@ -487,11 +487,11 @@ func (cpu *CPU) exec() bool {
 			}
 		}
 	} else {
-		cycle = 1 // TODO: check if cycle is 1
+		cycle = 1
 
 		// ref: https://rednex.github.io/rgbds/gbz80.7.html#HALT
 		if !cpu.Reg.IME {
-			IE, IF := cpu.fetchIO(IEIO), cpu.fetchIO(IFIO)
+			IE, IF := cpu.RAM[IEIO], cpu.RAM[IFIO]
 			pending := IE&IF != 0
 			if pending {
 				cpu.halt = false
