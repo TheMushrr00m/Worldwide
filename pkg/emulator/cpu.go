@@ -2,6 +2,7 @@ package emulator
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net"
 	"sync"
 
@@ -13,6 +14,18 @@ import (
 	"gbc/pkg/joypad"
 	"gbc/pkg/rtc"
 	"gbc/pkg/serial"
+)
+
+var (
+	wyvPC    uint16 = 0
+	wyvCycle        = 0
+	wyvDone         = false
+)
+
+const (
+	wyvPrint = 0x163
+	wyvStart = 0x170
+	wyvEnd   = 0x1ee
 )
 
 const (
@@ -367,6 +380,25 @@ func (cpu *CPU) Exit() {
 // Exec 1サイクル
 func (cpu *CPU) exec() bool {
 	bank, PC := cpu.ROMBank.ptr, cpu.Reg.PC
+	wyvPC = PC
+	if wyvPC == wyvPrint && !wyvDone {
+		fmt.Println(wyvCycle * 4)
+		expected, _ := ioutil.ReadFile("./test/cenotaph/cenotaph.atr")
+		acutal := cpu.RAM[0xc000 : 0xc000+len(expected)]
+		ok, offset := true, 0
+		num := 0
+		for i := 0; i < len(expected); i++ {
+			num = i
+			if expected[i] != acutal[i] {
+				ok = false
+				offset = i
+				break
+			}
+		}
+		fmt.Printf("Check %d Bytes\n", num+1)
+		fmt.Printf("Result: %v, Wrong offset: %d\n", ok, offset)
+		wyvDone = true
+	}
 
 	bytecode := cpu.FetchMemory8(PC)
 	opcode := opcodes[bytecode]

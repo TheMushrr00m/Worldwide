@@ -1,5 +1,7 @@
 package emulator
 
+import "fmt"
+
 // IMESwitch - ${Count}サイクル後にIMEを${Value}の値に切り替える ${Working}=falseのときは無効
 type IMESwitch struct {
 	Count   uint
@@ -201,6 +203,9 @@ func (cpu *CPU) clearJoypadFlag() {
 // ------------ trigger --------------------
 
 func (cpu *CPU) triggerInterrupt() {
+	if wyvPC >= wyvStart && wyvPC <= wyvEnd {
+		fmt.Println("interrupt in decompression")
+	}
 	cpu.Reg.IME = false
 	cpu.halt = false
 	cpu.timer(5) // https://gbdev.gg8.se/wiki/articles/Interrupts#InterruptServiceRoutine
